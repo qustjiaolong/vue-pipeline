@@ -6,7 +6,11 @@
 
     <g v-if="status!=='start' && status!=='end'">
       <g>
-        <text :x="getText().x" :y="getText().y" class="pipeline-node-label">{{getText().text}}</text>
+        <text :x="getText().x" :y="getText().y" class="pipeline-node-label">
+          {{getText().tspan2==''?getText().tspan1:""}}
+          <tspan x="-50" y="25" v-if="getText().tspan2!=''">{{getText().tspan1}}</tspan>
+          <tspan x="-50" y="40" v-if="getText().tspan2!=''">{{getText().tspan2}}</tspan>
+        </text>
         <title>{{label}}</title>
       </g>
       <g class="svgResultStatus">
@@ -91,7 +95,7 @@ export default {
   },
   methods: {
     getText() {
-      let maxLength = 14
+      let maxLength = 15
       let text =
         this.label.length > maxLength
           ? this.label.substring(0, maxLength) + '...'
@@ -100,7 +104,8 @@ export default {
       return {
         x: -width * 2.7,
         y: -20,
-        text
+        tspan1: this.label.substring(0, maxLength),
+        tspan2: this.label.substring(maxLength, this.label.length)
       }
     },
     handleClick() {

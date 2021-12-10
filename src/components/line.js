@@ -21,10 +21,16 @@ export class EdgeService {
   drawEdge(start, end) {}
 
   drawVerticalEdge(start, end) {
-      const radius=14
-    return `M ${start.x},${start.y + radius} L${start.x},${start.y + radius} ${end.x},${
-      end.y - radius
-    }`;
+    const radius=14
+    if(end.y>start.y){
+      return `M ${start.x},${start.y + radius} L${start.x},${start.y + radius} ${end.x},${
+        end.y - radius
+      }`;
+    } else {
+      return `M ${start.x},${start.y - radius} L${start.x},${start.y - radius} ${end.x},${
+        end.y + radius
+      }`;
+    }
   }
 
   drawHEdge(start, end) {
@@ -63,9 +69,15 @@ export class EdgeService {
    * @param {*} end
    */
   getStraightLinePath(start, end) {
-    return `M ${start.x + 12},${start.y} L${start.x + 12},${start.y} ${
-      end.x - 15
-    },${end.y}`;
+    if(start.x>end.x){
+      return `M ${start.x + 12},${start.y} L${start.x + 12},${start.y} ${
+        end.x + 15
+      },${end.y}`;
+    } else{
+      return `M ${start.x + 12},${start.y} L${start.x + 12},${start.y} ${
+        end.x - 15
+      },${end.y}`;
+    }
   }
 }
 
@@ -85,18 +97,28 @@ class DefaultStyleService extends EdgeService {
     const rb = "c 12 0 12 -12 12 -12";
     const rt = "c 12 0 12 12 12 12";
     const lt = "c 0 -12 12 -12 12 -12";
+    const tl = "c 0 12 -12 12 -12 12";
     let midy = Math.abs(end.y - start.y);
-    if (end.y > start.y) {
-      // 左上到右下
-      let firstCorner = end.x - start.x - 50;
-      const d = `M ${start.x + 10} ${start.y}\
-                l ${20} 0\
-                ${rt} \
-                l 0 ${midy - 24} \
-                ${lb} \
-                l ${firstCorner - 20} 0
-            `;
-      return d;
+    if (end.y > start.y) {      // 左上到右下
+      if(end.x>start.x){
+        let firstCorner = end.x - start.x - 50;
+        const d = `M ${start.x + 10} ${start.y}\
+                  l ${20} 0\
+                  ${rt} \
+                  l 0 ${midy - 24} \
+                  ${lb} \
+                  l ${firstCorner - 20} 0
+              `;
+        return d;
+      }else {
+        let firstCorner = end.x - start.x + 30;
+        const d = `M ${start.x} ${start.y}\
+                  l 0 ${midy - 12} \
+                  ${tl} \
+                  l ${firstCorner} 0
+              `;
+        return d;
+      }
     } else {
       let lastCorner = end.x - start.x - 50;
       const d = `M ${start.x + 14} ${start.y}\
@@ -115,7 +137,11 @@ class DefaultStyleService extends EdgeService {
 class BesselStyleService extends EdgeService {
   drawEdge(start, end) {
     if (start.y == end.y) {
-      return this.drawHEdge(start, end);
+      if(start.x<end.x){
+        return this.drawHEdge(start, end);
+      }  else {
+        return this.drawHEdge(end, start);
+      }
     }
     if (start.x == end.x) {
       return this.drawVerticalEdge(start, end);

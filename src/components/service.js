@@ -172,8 +172,12 @@ class Pipeline {
       for (let j = 0; j < this.matrix.length; j++) {
         let index = this.matrix[i][j];
         if (index != undefined) {
-          this.nodes[index].x = this.startx + this.xstep * j;
-          this.nodes[index].y = this.starty + this.ystep * i;
+          if(this.nodes[index].x==undefined){
+            this.nodes[index].x = this.startx + this.xstep * j;
+          }
+          if(this.nodes[index].y==undefined){
+            this.nodes[index].y = this.starty + this.ystep * i;
+          }
           this.width = Math.max(this.width, this.nodes[index].x + this.startx);
           this.height = Math.max(
             this.height,
